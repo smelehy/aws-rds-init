@@ -17,4 +17,4 @@ create a lambda deployment package
   - cd packages
   - zip -r ../deployment-package.zip .
   - cd ..
-  - zip l-deploy.zip lambda_function.py  (python file name has to be 'lambda_function.py')
+  - zip deployment-pacakge.zip lambda_function.py  (python file name has to be 'lambda_function.py')
