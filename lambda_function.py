@@ -36,7 +36,9 @@ pprint(dbsecrets)
 print('***************************************************')
 #dbparams  = json.loads(get_secret('hlw-db1-credentials','us-east-2'))
 #pprint(dbparams)
-#print('*****************************')
+print('**********dbsecrets***********')
+pprint(dbsecrets)
+print('*****************************')
 rds_host  = 'hlw-database-1.csmymcm2btd4.us-east-2.rds.amazonaws.com'
 #rds_host  = dbparams.get('host')
 name      = dbsecrets.get('username')
@@ -45,14 +47,12 @@ password  = dbsecrets.get('password')
 db_name   = 'hlw_database_1'
 sqltables = {
     'sysconfig' : {
-        'id'      : 
         'appname' : {'type': 'varchar(100)', 'value'    : 'hellow-lamdba-app'},
         'sysid'   : {'type': 'int'         , 'value'    : 123876             },
         'country' : {'type': 'varchar(10)' , 'value'    : "USA"              },
-        'created' : 
     },
 }
-
+print('lambda-init.......')
 def lambda_handler(event, context):
     #result = {**dbsecrets, **dbparams}
     #This function fetches content from MySQL RDS instance
@@ -60,18 +60,17 @@ def lambda_handler(event, context):
     conn = pymysql.connect(host=rds_host, user=name, passwd=password, db=db_name, connect_timeout=5)
     print('after connect')
     cur  = conn.cursor()
-    sqltext = 'CREATE TABLE IF NOT EXISTS sysconfig (id INT AUTO_INCREMENT PRIMARY KEY,
-    appname VARCHAR(255) DEFAULT 'hello-world-lambda-app',
-    sysid AUTO_INCREMENT,
-    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    description TEXT DEFAULT 'This is the first lambda serverless app',
-    last_update DATE
-);'
+    sqltext = 'CREATE TABLE IF NOT EXISTS sysconfig (id INT AUTO_INCREMENT PRIMARY KEY,appname VARCHAR(255), sysid INT, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, description VARCHAR(255),last_update DATE);'
+    print(sqltext)
     cur.execute(sqltext)
+    cur.execute('insert into sysconfig (appname,sysid,description) values (\'hellow-world-init-rds\',8574746,\'First serverless lambda to init rds mysql database\')')
+    cur.execute('insert into sysconfig (appname,sysid,description) values (\'init-rds\',4534,\'2nd serverless lambda to init rds mysql database\')')
+    cur.execute('commit')
     cur.execute('select * from sysconfig')
+    result = {}
     for row in cur:
-        print(row,row[0],row[1],row[2])
-        result[row[0]] = row[1]
+        print(row)
+        result[row[0]] = {'appname':row[1],'sysid':str(row[2]),'description': row[4]}
 
     return result
 
