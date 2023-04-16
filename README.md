@@ -18,3 +18,8 @@ create a lambda deployment package
   - zip -r ../deployment-package.zip .
   - cd ..
   - zip deployment-pacakge.zip lambda_function.py  (python file name has to be 'lambda_function.py')
+
+connect to RDS via Cloud9
+  - myawl -u[username] -p -h [rds endpoint]
+  - mysql -uadmin -p -h hlw-database-1.csmymcm2btd4.us-east-2.rds.amazonaws.com
+  - (enter pwd when prompted)
